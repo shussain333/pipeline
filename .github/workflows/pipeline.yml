@@ -63,46 +63,72 @@ jobs:
           echo ::set-output name=release_version::$new_version
           echo ::set-output name=next_dev_version::$next_dev_version
 
-      - name: Create and switch to release branch
+      - name: Prepare Release
         run: |
-          git checkout -b release-${{ steps.calc_version.outputs.release_version }}
-          git push -u origin release-${{ steps.calc_version.outputs.release_version }}
+          mvn release:prepare \
+          -DreleaseVersion=${{ steps.calc_version.outputs.release_version }} \
+          -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
+          -DtagNameFormat=v@{project.version} \
+          -DpushChanges=false
 
-      - name: Update version in pom.xml
-        run: mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.release_version }}
-
-      - name: Commit version update
+      - name: Push changes
         run: |
-          git commit -am "Prepare release ${{ steps.calc_version.outputs.release_version }}"
           git push
+          git push --tags
 
-      - name: Build and test
-        run: mvn clean verify
+      - name: Perform Release
+        run: mvn release:perform -DlocalCheckout=true
 
-      - name: Create GitHub release
+      - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.calc_version.outputs.release_version }}
+          tag_name: ${{ steps.calc_version.outputs.release_version }}
           release_name: Release ${{ steps.calc_version.outputs.release_version }}
           draft: false
           prerelease: false
 
-      - name: Switch to main branch
-        run: git checkout main
-
-      - name: Merge release branch
-        run: |
-          git merge --no-ff release-${{ steps.calc_version.outputs.release_version }}
-          git push
-
-      - name: Update to next snapshot version
-        run: |
-          mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT
-          git commit -am "Prepare for next development iteration"
-          git push
-
-      - name: Delete release branch
-        run: |
-          git push origin --delete release-${{ steps.calc_version.outputs.release_version }}
+#      - name: Create and switch to release branch
+#        run: |
+#          git checkout -b release-${{ steps.calc_version.outputs.release_version }}
+#          git push -u origin release-${{ steps.calc_version.outputs.release_version }}
+#
+#      - name: Update version in pom.xml
+#        run: mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.release_version }}
+#
+#      - name: Commit version update
+#        run: |
+#          git commit -am "Prepare release ${{ steps.calc_version.outputs.release_version }}"
+#          git push
+#
+#      - name: Build and test
+#        run: mvn clean verify
+#
+#      - name: Create GitHub release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: v${{ steps.calc_version.outputs.release_version }}
+#          release_name: Release ${{ steps.calc_version.outputs.release_version }}
+#          draft: false
+#          prerelease: false
+#
+#      - name: Switch to main branch
+#        run: git checkout main
+#
+#      - name: Merge release branch
+#        run: |
+#          git merge --no-ff release-${{ steps.calc_version.outputs.release_version }}
+#          git push
+#
+#      - name: Update to next snapshot version
+#        run: |
+#          mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT
+#          git commit -am "Prepare for next development iteration"
+#          git push
+#
+#      - name: Delete release branch
+#        run: |
+#          git push origin --delete release-${{ steps.calc_version.outputs.release_version }}
