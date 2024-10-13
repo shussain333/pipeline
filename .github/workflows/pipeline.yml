@@ -1,0 +1,108 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'Release type (major, minor, patch)'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Get current version
+        id: get_version
+        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+      - name: Calculate release version
+        id: calc_version
+        run: |
+          current_version=${{ steps.get_version.outputs.version }}
+          IFS='.' read -ra version_parts <<< "$current_version"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+
+          case "${{ github.event.inputs.releaseType }}" in
+            major)
+              new_version=$((major + 1)).0.0
+              next_dev_version=$((major + 1)).0.1
+              ;;
+            minor)
+              new_version=$major.$((minor + 1)).0
+              next_dev_version=$major.$((minor + 1)).1
+              ;;
+            patch)
+              new_version=$major.$minor.$((patch + 1))
+              next_dev_version=$major.$minor.$((patch + 2))
+              ;;
+          esac
+
+          echo ::set-output name=release_version::$new_version
+          echo ::set-output name=next_dev_version::$next_dev_version
+
+      - name: Create and switch to release branch
+        run: |
+          git checkout -b release-${{ steps.calc_version.outputs.release_version }}
+          git push -u origin release-${{ steps.calc_version.outputs.release_version }}
+
+      - name: Update version in pom.xml
+        run: mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.release_version }}
+
+      - name: Commit version update
+        run: |
+          git commit -am "Prepare release ${{ steps.calc_version.outputs.release_version }}"
+          git push
+
+      - name: Build and test
+        run: mvn clean verify
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.calc_version.outputs.release_version }}
+          release_name: Release ${{ steps.calc_version.outputs.release_version }}
+          draft: false
+          prerelease: false
+
+      - name: Switch to main branch
+        run: git checkout main
+
+      - name: Merge release branch
+        run: |
+          git merge --no-ff release-${{ steps.calc_version.outputs.release_version }}
+          git push
+
+      - name: Update to next snapshot version
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT
+          git commit -am "Prepare for next development iteration"
+          git push
+
+      - name: Delete release branch
+        run: |
+          git push origin --delete release-${{ steps.calc_version.outputs.release_version }}
