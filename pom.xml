@@ -25,7 +25,13 @@
 		<url>https://github.com/shussain333/pipeline.git</url>
 		<tag>HEAD</tag>
 	</scm>
-
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>Quick cache package</name>
+			<url>https://maven.pkg.github.com/shussain333/pipeline</url>
+		</repository>
+	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
