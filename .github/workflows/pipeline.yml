@@ -81,13 +81,13 @@ jobs:
 
       - name: Create GitHub Release
         uses: actions/create-release@v1.1.4
-        env:
-          token: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: ${{ steps.calc_version.outputs.release_version }}
           release_name: Release ${{ steps.calc_version.outputs.release_version }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
 #      - name: Create and switch to release branch
 #        run: |
