@@ -42,15 +42,25 @@ jobs:
       - name: Create Maven settings.xml
         run: |
           mkdir -p ~/.m2
-          echo "<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd\">" > ~/.m2/settings.xml
-          echo "  <servers>" >> ~/.m2/settings.xml
-          echo "    <server>" >> ~/.m2/settings.xml
-          echo "      <id>central</id>" >> ~/.m2/settings.xml
-          echo "      <username>Z+N4e1vK</username>" >> ~/.m2/settings.xml
-          echo "      <password>8R1T12TMhHoKemfc/h8FFcuRbnRFW2CI6N+T1ZC7vo7c</password>" >> ~/.m2/settings.xml
-          echo "    </server>" >> ~/.m2/settings.xml
-          echo "  </servers>" >> ~/.m2/settings.xml
-          echo "</settings>" >> ~/.m2/settings.xml
+          echo "<settings>
+                  <servers>
+                    <server>
+                      <id>sonatype-nexus-releases</id>
+                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+                    </server>
+                    <server>
+                      <id>sonatype-nexus-snapshots</id>
+                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+                    </server>
+                    <server>
+                      <id>central</id>
+                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+                    </server>
+                  </servers>
+                </settings>" > ~/.m2/settings.xml
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
 
