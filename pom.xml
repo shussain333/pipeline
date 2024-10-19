@@ -41,7 +41,7 @@
 		</repository>-->
 		<snapshotRepository>
 			<id>central</id>
-			<url>https://central.sonatype.com/content/repositories/snapshots</url>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 			<layout>default</layout>
 		</snapshotRepository>
 		<repository>
