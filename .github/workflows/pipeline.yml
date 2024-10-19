@@ -79,9 +79,11 @@ jobs:
       - name: Configure pinentry-program
         run: |
           echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
-      - name: Restart GPG agent
+      - name: Stop GPG agent (if running)
         run: |
-          gpg-agent --kill gpg-agent
+          if [[ -n "$(pgrep gpg-agent)" ]]; then
+            gpg-agent --kill
+          fi
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
