@@ -160,6 +160,15 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<gpg.executable>gpg</gpg.executable>
+					<gpgArguments>
+						<arg>--batch</arg>
+						<arg>--passphrase</arg>
+						<arg>${gpg.passphrase}</arg>
+					</gpgArguments>
+					<useAgent>false</useAgent>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.central</groupId>
