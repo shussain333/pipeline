@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: Configure Git user
         run: |
@@ -44,16 +44,16 @@ jobs:
           mkdir -p ~/.m2
           echo "<settings>
                   <servers>
-                    <server>
-                      <id>sonatype-nexus-releases</id>
-                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
-                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
-                    </server>
-                    <server>
-                      <id>sonatype-nexus-snapshots</id>
-                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
-                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
-                    </server>
+#                    <server>
+#                      <id>sonatype-nexus-releases</id>
+#                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
+#                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+#                    </server>
+#                    <server>
+#                      <id>sonatype-nexus-snapshots</id>
+#                      <username>${{ secrets.SONATYPE_USERNAME }}</username>
+#                      <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+#                    </server>
                     <server>
                       <id>central</id>
                       <username>${{ secrets.SONATYPE_USERNAME }}</username>
@@ -63,10 +63,10 @@ jobs:
                 </settings>" > ~/.m2/settings.xml
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
-      - name: Install pinentry
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg
+#      - name: Install pinentry
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y gnupg
 #      - name: Create gpg-agent.conf
 #        run: |
 #          mkdir -p ~/.gnupg
@@ -86,33 +86,32 @@ jobs:
 #          if [[ -n "$(pgrep gpg-agent)" ]]; then
 #            gpg-agent --kill
 #          fi
-      - name: Find pinentry-tty path
-        id: find-pinentry
-        run: echo "PINENTRY_PATH=$(which pinentry-curses)" >> $GITHUB_ENV
-      - name: Create GPG Configuration
-        run: |
-          mkdir -p /home/runner/.gnupg
-          echo "allow-preset-passphrase" >> /home/runner/.gnupg/gpg-agent.conf
-          echo "use-agent" >> /home/runner/.gnupg/gpg.conf
-          echo "pinentry-program ${{ env.PINENTRY_PATH }}" >> /home/runner/.gnupg/gpg-agent.conf
-          chmod 700 /home/runner/.gnupg
-          chmod 600 /home/runner/.gnupg/*
-          gpgconf --kill gpg-agent  # Restart the GPG agent
-          export GPG_TTY=$(tty)
-      - name: content of GPG config
-        run: cat /home/runner/.gnupg/gpg-agent.conf
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-      - name: List GPG keys
-        run: gpg --list-secret-keys
-      - name: Content of conf
-        run: |
-          ls -a -1d /home/runner/.gnupg/
+#      - name: Find pinentry-tty path
+#        id: find-pinentry
+#        run: echo "PINENTRY_PATH=$(which pinentry-curses)" >> $GITHUB_ENV
+#      - name: Create GPG Configuration
+#        run: |
+#          mkdir -p /home/runner/.gnupg
+#          echo "allow-preset-passphrase" >> /home/runner/.gnupg/gpg-agent.conf
+#          echo "use-agent" >> /home/runner/.gnupg/gpg.conf
+#          echo "pinentry-program ${{ env.PINENTRY_PATH }}" >> /home/runner/.gnupg/gpg-agent.conf
+#          chmod 700 /home/runner/.gnupg
+#          chmod 600 /home/runner/.gnupg/*
+#          gpgconf --kill gpg-agent  # Restart the GPG agent
+#          export GPG_TTY=$(tty)
+#      - name: content of GPG config
+#        run: cat /home/runner/.gnupg/gpg-agent.conf
+#      - name: Import GPG key
+#        run: |
+#          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+#      - name: List GPG keys
+#        run: gpg --list-secret-keys
+#      - name: Content of conf
+#        run: |
+#          ls -a -1d /home/runner/.gnupg/
       - name: Set GPG Passphrase
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GPG_KEY: ${{ secrets.GPG_USER }}
         run: |
           echo "MAVEN_GPG_PASSPHRASE=${GPG_PASSPHRASE}" >> $GITHUB_ENV
 
@@ -150,8 +149,8 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false \
-          -Dsigning.keyId="${{ secrets.GPG_USER }}" \
-          -Dsigning.passphrase="${GPG_PASSPHRASE}" \
+#          -Dsigning.keyId="${{ secrets.GPG_USER }}" \
+#          -Dsigning.passphrase="${GPG_PASSPHRASE}" \
           -X
 
       - name: Push changes
@@ -160,7 +159,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dsigning.keyId="${{ secrets.GPG_USER }}" -Dsigning.passphrase="${{ secrets.GPG_USER }}" -s ~/.m2/settings.xml
+        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release
