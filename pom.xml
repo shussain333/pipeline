@@ -160,6 +160,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<gpg.executable>gpg</gpg.executable>
+					<gpg.passphrase>${gpg.passphrase}</gpg.passphrase>
+					<useAgent>false</useAgent>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.central</groupId>
@@ -168,8 +173,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>central</publishingServerId>
-					<username>${env.SONATYPE_USERNAME}</username>
-					<password>${env.SONATYPE_PASSWORD}</password>
 				</configuration>
 			</plugin>
 		</plugins>
