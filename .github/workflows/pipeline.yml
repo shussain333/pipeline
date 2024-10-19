@@ -81,6 +81,8 @@ jobs:
 
       - name: Perform Release
         run: mvn release:perform -DlocalCheckout=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1.1.4
