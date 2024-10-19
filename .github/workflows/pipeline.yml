@@ -100,7 +100,7 @@ jobs:
 
       - name: Prepare Release
         run: |
-          mvn release:prepare \
+          mvn -B release:prepare \
           -DreleaseVersion=${{ steps.calc_version.outputs.release_version }} \
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
@@ -113,7 +113,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s ~/.m2/settings.xml
+        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release
