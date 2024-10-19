@@ -11,6 +11,7 @@ on:
           - major
           - minor
           - patch
+
 permissions:
   contents: write
   packages: write
@@ -53,52 +54,11 @@ jobs:
                 </settings>" > ~/.m2/settings.xml
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
-#      - name: Install pinentry
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y gnupg
-#      - name: Create gpg-agent.conf
-#        run: |
-#          mkdir -p ~/.gnupg
-#          touch ~/.gnupg/gpg-agent.conf
-#          chmod 700 ~/.gnupg
-#          chmod 600 ~/.gnupg/*
-#
-#      - name: Configure pinentry-program (Optional)
-#        run: |
-#          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
-#
-#      - name: Configure pinentry-program
-#        run: |
-#          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
-#      - name: Stop GPG agent (if running)
-#        run: |
-#          if [[ -n "$(pgrep gpg-agent)" ]]; then
-#            gpg-agent --kill
-#          fi
-#      - name: Find pinentry-tty path
-#        id: find-pinentry
-#        run: echo "PINENTRY_PATH=$(which pinentry-curses)" >> $GITHUB_ENV
-#      - name: Create GPG Configuration
-#        run: |
-#          mkdir -p /home/runner/.gnupg
-#          echo "allow-preset-passphrase" >> /home/runner/.gnupg/gpg-agent.conf
-#          echo "use-agent" >> /home/runner/.gnupg/gpg.conf
-#          echo "pinentry-program ${{ env.PINENTRY_PATH }}" >> /home/runner/.gnupg/gpg-agent.conf
-#          chmod 700 /home/runner/.gnupg
-#          chmod 600 /home/runner/.gnupg/*
-#          gpgconf --kill gpg-agent  # Restart the GPG agent
-#          export GPG_TTY=$(tty)
-#      - name: content of GPG config
-#        run: cat /home/runner/.gnupg/gpg-agent.conf
+
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-#      - name: List GPG keys
-#        run: gpg --list-secret-keys
-#      - name: Content of conf
-#        run: |
-#          ls -a -1d /home/runner/.gnupg/
+
       - name: Set GPG Passphrase
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -116,16 +76,16 @@ jobs:
 
           case "${{ github.event.inputs.releaseType }}" in
             major)
-              new_version=$((major + 1)).0.0
+              new_version=$((major)).0.0
               next_dev_version=$((major + 1)).0.1
               ;;
             minor)
-              new_version=$major.$((minor + 1)).0
+              new_version=$major.$((minor)).0
               next_dev_version=$major.$((minor + 1)).1
               ;;
             patch)
-              new_version=$major.$minor.$((patch + 1))
-              next_dev_version=$major.$minor.$((patch + 2))
+              new_version=$major.$minor.$((patch))
+              next_dev_version=$major.$minor.$((patch + 1))
               ;;
           esac
 
@@ -138,8 +98,7 @@ jobs:
           -DreleaseVersion=${{ steps.calc_version.outputs.release_version }} \
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
-          -DpushChanges=false \
-          -X
+          -DpushChanges=false
 
       - name: Push changes
         run: |
@@ -147,20 +106,4 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -s ~/.m2/settings.xml
-
-# commenting below working code
-#      - name: Perform Release
-#        run: mvn release:perform -DlocalCheckout=true
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-#
-#      - name: Create GitHub Release
-#        uses: actions/create-release@v1.1.4
-#        with:
-#          tag_name: ${{ steps.calc_version.outputs.release_version }}
-#          release_name: Release ${{ steps.calc_version.outputs.release_version }}
-#          draft: false
-#          prerelease: false
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: mvn -B release:perform -DlocalCheckout=true -s ~/.m2/settings.xml
