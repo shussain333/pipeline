@@ -63,10 +63,10 @@ jobs:
                 </settings>" > ~/.m2/settings.xml
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
-#      - name: Install pinentry
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install pinentry-tty
+      - name: Install pinentry
+        run: |
+          sudo apt-get update
+          sudo apt-get install pinentry-tty
 #      - name: Create gpg-agent.conf
 #        run: |
 #          mkdir -p ~/.gnupg
