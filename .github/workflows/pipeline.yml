@@ -92,7 +92,8 @@ jobs:
       - name: List GPG keys
         run: gpg --list-secret-keys
       - name: Content of conf
-        run: ls -d /home/runner/.gnupg
+        run: |
+          ls -a -1d /home/runner/.gnupg
       - name: Set GPG Passphrase
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
