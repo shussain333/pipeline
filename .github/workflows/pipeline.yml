@@ -91,6 +91,11 @@ jobs:
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
       - name: List GPG keys
         run: gpg --list-secret-keys
+      - name: Set GPG Passphrase
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "GPG_PASSPHRASE=${GPG_PASSPHRASE}" >> $GITHUB_ENV
 
       - name: Calculate release version
         id: calc_version
@@ -126,7 +131,7 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false \
-          -Dgpg.passphrase=aUdrey20cRosSwAy14sUbPRoOf
+          -Dgpg.passphrase="${GPG_PASSPHRASE}"
 
       - name: Push changes
         run: |
@@ -134,7 +139,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase=aUdrey20cRosSwAy14sUbPRoOf -s ~/.m2/settings.xml
+        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase="${GPG_PASSPHRASE}" -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release
