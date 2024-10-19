@@ -113,6 +113,7 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false
+          -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
 
       - name: Push changes
         run: |
