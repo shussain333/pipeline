@@ -67,6 +67,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install pinentry-tty
+      - name: Configure pinentry-program
+        run: |
+          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+      - name: Restart GPG agent
+        run: |
+          gpg-agent --kill gpg-agent
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
