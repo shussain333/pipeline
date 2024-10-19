@@ -112,8 +112,9 @@ jobs:
           -DreleaseVersion=${{ steps.calc_version.outputs.release_version }} \
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
-          -DpushChanges=false
-          -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+          -DpushChanges=false \
+          -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          -Dgpg.useAgent=false
 
       - name: Push changes
         run: |
