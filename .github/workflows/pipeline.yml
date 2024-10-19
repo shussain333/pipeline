@@ -88,7 +88,7 @@ jobs:
 #          fi
       - name: Create GPG Configuration
         run: |
-          mkdir -p ~/.gnupg
+          mkdir -p /home/runner/.gnupg
           echo "allow-preset-passphrase" >> /home/runner/.gnupg/gpg-agent.conf
           echo "pinentry-program /usr/bin/pinentry-tty" >> /home/runner/.gnupg/gpg-agent.conf
           chmod 700 ~/.gnupg
