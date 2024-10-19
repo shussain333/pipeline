@@ -11,6 +11,7 @@
 	<artifactId>pipeline</artifactId>
 	<version>7.0.1-SNAPSHOT</version>
 	<name>pipeline</name>
+	<packaging>jar</packaging>
 	<description>Demo project for Spring Boot</description>
 	<url />
 	<licenses>
