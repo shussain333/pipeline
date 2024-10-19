@@ -64,18 +64,9 @@ jobs:
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
 
-      - name: Generate GPG key
+      - name: Import GPG key
         run: |
-          gpg --full-generate-key --batch <<EOF
-          %transient
-          Key-Type: RSA
-          Key-Length: 2048
-          Name-Real: Sartaj Hussain
-          Name-Email: sartajhussain3786@gmail.com
-          Expire-Date: 0
-          Passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          %commit
-          EOF
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
 
       - name: List GPG keys
         run: gpg --list-secret-keys
@@ -114,8 +105,7 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false \
-          -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-          -Dgpg.useAgent=false
+          -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
 
       - name: Push changes
         run: |
