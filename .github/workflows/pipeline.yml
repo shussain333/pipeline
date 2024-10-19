@@ -112,8 +112,9 @@ jobs:
       - name: Set GPG Passphrase
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY: ${{ secrets.GPG_USER }}
         run: |
-          echo "GPG_PASSPHRASE=${GPG_PASSPHRASE}" >> $GITHUB_ENV
+          echo "MAVEN_GPG_PASSPHRASE=${GPG_PASSPHRASE}" >> $GITHUB_ENV
 
       - name: Calculate release version
         id: calc_version
