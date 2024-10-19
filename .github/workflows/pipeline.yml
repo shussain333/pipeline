@@ -86,6 +86,13 @@ jobs:
 #          if [[ -n "$(pgrep gpg-agent)" ]]; then
 #            gpg-agent --kill
 #          fi
+      - name: Create GPG Configuration
+        run: |
+          mkdir -p ~/.gnupg
+          echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+          chmod 700 ~/.gnupg
+          chmod 600 ~/.gnupg/*
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
