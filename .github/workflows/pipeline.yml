@@ -148,7 +148,8 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false \
-          -Dgpg.passphrase="${GPG_PASSPHRASE}"
+          -Dsigning.keyId="${{ secrets.GPG_USER }}"
+          -Dsigning.passphrase="${GPG_PASSPHRASE}"
 
       - name: Push changes
         run: |
@@ -156,7 +157,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase="${GPG_PASSPHRASE}" -s ~/.m2/settings.xml
+        run: mvn -B release:perform -DlocalCheckout=true -P snapshot -Dsigning.keyId="${{ secrets.GPG_USER }}" -Dsigning.passphrase="${{ secrets.GPG_USER }}" -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release

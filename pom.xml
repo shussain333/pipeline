@@ -161,13 +161,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<gpg.executable>gpg</gpg.executable>
-					<gpgArguments>
-						<arg>--batch</arg>
-						<arg>--yes</arg>
-						<arg>--passphrase</arg>
-						<arg>${gpg.passphrase}</arg>
-					</gpgArguments>
+					<keyname>${signing.keyId}</keyname>
+					<passphrase>${signing.password}</passphrase>
 					<useAgent>false</useAgent>
 				</configuration>
 			</plugin>
