@@ -89,8 +89,6 @@ jobs:
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-      - name: check path
-        run: which gpg-agent.conf
       - name: List GPG keys
         run: gpg --list-secret-keys
 
