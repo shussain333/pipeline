@@ -80,7 +80,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn clean deploy -P snapshot -Dusername=${SONATYPE_USERNAME} -Dpassword=${SONATYPE_PASSWORD}
+        run: mvn clean deploy -P snapshot -Dusername=${{ env.SONATYPE_USERNAME }} -Dpassword=${{ env.SONATYPE_PASSWORD }}
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
