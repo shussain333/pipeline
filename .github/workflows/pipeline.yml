@@ -67,6 +67,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install pinentry-tty
+      - name: Create gpg-agent.conf
+        run: |
+          mkdir -p ~/.gnupg
+          touch ~/.gnupg/gpg-agent.conf
+
+      - name: Configure pinentry-program (Optional)
+        run: |
+          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+
       - name: Configure pinentry-program
         run: |
           echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
