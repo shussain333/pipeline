@@ -71,6 +71,8 @@ jobs:
         run: |
           mkdir -p ~/.gnupg
           touch ~/.gnupg/gpg-agent.conf
+          chmod 700 ~/.gnupg
+          chmod 600 ~/.gnupg/*
 
       - name: Configure pinentry-program (Optional)
         run: |
