@@ -67,9 +67,10 @@ jobs:
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-
       - name: List GPG keys
         run: gpg --list-secret-keys
+      - name: Set GPG_TTY
+        run: echo "export GPG_TTY=$(tty)" >> $GITHUB_ENV
 
       - name: Calculate release version
         id: calc_version
