@@ -67,15 +67,15 @@ jobs:
       - name: Generate GPG key
         run: |
           gpg --full-generate-key --batch <<EOF
-          %no-protection
-          %transient
-          Key-Type: 1
+          Key-Type: RSA
           Key-Length: 2048
-          Subkey-Type: 1
-          Subkey-Length: 2048
           Name-Real: Sartaj Hussain
           Name-Email: sartajhussain3786@gmail.com
+          Expire-Date: 0
+          Passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          %commit
           EOF
+
       - name: List GPG keys
         run: gpg --list-secret-keys
 
@@ -120,7 +120,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn release:perform -DlocalCheckout=true -P snapshot -s ~/.m2/settings.xml
+        run: mvn release:perform -DlocalCheckout=true -P snapshot -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release
