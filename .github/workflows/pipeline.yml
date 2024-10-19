@@ -91,9 +91,9 @@ jobs:
 #          export GPG_TTY=$(tty)
 #      - name: content of GPG config
 #        run: cat /home/runner/.gnupg/gpg-agent.conf
-#      - name: Import GPG key
-#        run: |
-#          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
 #      - name: List GPG keys
 #        run: gpg --list-secret-keys
 #      - name: Content of conf
