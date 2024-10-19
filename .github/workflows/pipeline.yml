@@ -66,7 +66,7 @@ jobs:
       - name: Install pinentry
         run: |
           sudo apt-get update
-          sudo apt-get install -y gnupg pinentry-tty
+          sudo apt-get install -y gnupg
 #      - name: Create gpg-agent.conf
 #        run: |
 #          mkdir -p ~/.gnupg
@@ -88,11 +88,12 @@ jobs:
 #          fi
       - name: Find pinentry-tty path
         id: find-pinentry
-        run: echo "PINENTRY_PATH=$(which pinentry-tty)" >> $GITHUB_ENV
+        run: echo "PINENTRY_PATH=$(which pinentry-curses)" >> $GITHUB_ENV
       - name: Create GPG Configuration
         run: |
           mkdir -p /home/runner/.gnupg
           echo "allow-preset-passphrase" >> /home/runner/.gnupg/gpg-agent.conf
+          echo "use-agent" >> /home/runner/.gnupg/gpg.conf
           echo "pinentry-program ${{ env.PINENTRY_PATH }}" >> /home/runner/.gnupg/gpg-agent.conf
           chmod 700 /home/runner/.gnupg
           chmod 600 /home/runner/.gnupg/*
@@ -106,7 +107,7 @@ jobs:
         run: gpg --list-secret-keys
       - name: Content of conf
         run: |
-          ls -a -1d /home/runner/.gnupg
+          ls -a -1d /home/runner/.gnupg/
       - name: Set GPG Passphrase
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
