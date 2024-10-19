@@ -139,8 +139,6 @@ jobs:
           -DdevelopmentVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT \
           -DtagNameFormat=v@{project.version} \
           -DpushChanges=false \
-#          -Dsigning.keyId="${{ secrets.GPG_USER }}" \
-#          -Dsigning.passphrase="${GPG_PASSPHRASE}" \
           -X
 
       - name: Push changes
