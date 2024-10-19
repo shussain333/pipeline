@@ -120,10 +120,7 @@ jobs:
           git push --tags
 
       - name: Release snapshot
-        run: mvn clean deploy -P snapshot -Dusername=${{ env.SONATYPE_USERNAME }} -Dpassword=${{ env.SONATYPE_PASSWORD }} -s ~/.m2/settings.xml
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: mvn release:perform -DlocalCheckout=true -P snapshot -s ~/.m2/settings.xml
 
 # commenting below working code
 #      - name: Perform Release
