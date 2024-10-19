@@ -67,6 +67,8 @@ jobs:
       - name: Generate GPG key
         run: |
           gpg --full-generate-key --batch <<EOF
+          %no-protection
+          %transient
           Key-Type: RSA
           Key-Length: 2048
           Name-Real: Sartaj Hussain
