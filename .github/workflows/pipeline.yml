@@ -79,61 +79,24 @@ jobs:
           git push
           git push --tags
 
-      - name: Perform Release
-        run: mvn release:perform -DlocalCheckout=true
+      - name: Release snapshot
+        run: mvn clean deploy -P snapshot -Dusername=${SONATYPE_USERNAME} -Dpassword=${SONATYPE_PASSWORD}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1.1.4
-        with:
-          tag_name: ${{ steps.calc_version.outputs.release_version }}
-          release_name: Release ${{ steps.calc_version.outputs.release_version }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-
-#      - name: Create and switch to release branch
-#        run: |
-#          git checkout -b release-${{ steps.calc_version.outputs.release_version }}
-#          git push -u origin release-${{ steps.calc_version.outputs.release_version }}
-#
-#      - name: Update version in pom.xml
-#        run: mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.release_version }}
-#
-#      - name: Commit version update
-#        run: |
-#          git commit -am "Prepare release ${{ steps.calc_version.outputs.release_version }}"
-#          git push
-#
-#      - name: Build and test
-#        run: mvn clean verify
-#
-#      - name: Create GitHub release
-#        uses: actions/create-release@v1
+# commenting below working code
+#      - name: Perform Release
+#        run: mvn release:perform -DlocalCheckout=true
 #        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+#
+#      - name: Create GitHub Release
+#        uses: actions/create-release@v1.1.4
 #        with:
-#          tag_name: v${{ steps.calc_version.outputs.release_version }}
+#          tag_name: ${{ steps.calc_version.outputs.release_version }}
 #          release_name: Release ${{ steps.calc_version.outputs.release_version }}
 #          draft: false
 #          prerelease: false
-#
-#      - name: Switch to main branch
-#        run: git checkout main
-#
-#      - name: Merge release branch
-#        run: |
-#          git merge --no-ff release-${{ steps.calc_version.outputs.release_version }}
-#          git push
-#
-#      - name: Update to next snapshot version
-#        run: |
-#          mvn versions:set -DnewVersion=${{ steps.calc_version.outputs.next_dev_version }}-SNAPSHOT
-#          git commit -am "Prepare for next development iteration"
-#          git push
-#
-#      - name: Delete release branch
-#        run: |
-#          git push origin --delete release-${{ steps.calc_version.outputs.release_version }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

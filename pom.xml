@@ -13,12 +13,19 @@
 	<name>pipeline</name>
 	<packaging>jar</packaging>
 	<description>Demo project for Spring Boot</description>
-	<url />
+	<url>https://github.com/shussain333/pipeline</url>
 	<licenses>
-		<license />
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
 	</licenses>
 	<developers>
-		<developer />
+		<developer>
+			<id>shussain333</id>
+			<name>Sartaj Hussain</name>
+			<email>sartajhussain3786@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:git:https://github.com/shussain333/pipeline.git</connection>
@@ -27,10 +34,20 @@
 		<tag>HEAD</tag>
 	</scm>
 	<distributionManagement>
-		<repository>
+		<!--<repository>
 			<id>github</id>
 			<name>Quick cache package</name>
 			<url>https://maven.pkg.github.com/shussain333/pipeline</url>
+		</repository>-->
+		<snapshotRepository>
+			<id>central</id>
+			<url>https://central.sonatype.com/content/repositories/snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+		<repository>
+			<id>central</id>
+			<url>https://central.sonatype.com/service/local/staging/deploy/maven2/</url>
+			<layout>default</layout>
 		</repository>
 	</distributionManagement>
 	<properties>
