@@ -98,6 +98,7 @@ jobs:
           chmod 700 /home/runner/.gnupg
           chmod 600 /home/runner/.gnupg/*
           gpgconf --kill gpg-agent  # Restart the GPG agent
+          export GPG_TTY=$(tty)
       - name: content of GPG config
         run: cat /home/runner/.gnupg/gpg-agent.conf
       - name: Import GPG key
