@@ -63,31 +63,32 @@ jobs:
                 </settings>" > ~/.m2/settings.xml
       - name: View settings.xml
         run: cat ~/.m2/settings.xml
-      - name: Install pinentry
-        run: |
-          sudo apt-get update
-          sudo apt-get install pinentry-tty
-      - name: Create gpg-agent.conf
-        run: |
-          mkdir -p ~/.gnupg
-          touch ~/.gnupg/gpg-agent.conf
-          chmod 700 ~/.gnupg
-          chmod 600 ~/.gnupg/*
-
-      - name: Configure pinentry-program (Optional)
-        run: |
-          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
-
-      - name: Configure pinentry-program
-        run: |
-          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
-      - name: Stop GPG agent (if running)
-        run: |
-          if [[ -n "$(pgrep gpg-agent)" ]]; then
-            gpg-agent --kill
-          fi
+#      - name: Install pinentry
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install pinentry-tty
+#      - name: Create gpg-agent.conf
+#        run: |
+#          mkdir -p ~/.gnupg
+#          touch ~/.gnupg/gpg-agent.conf
+#          chmod 700 ~/.gnupg
+#          chmod 600 ~/.gnupg/*
+#
+#      - name: Configure pinentry-program (Optional)
+#        run: |
+#          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+#
+#      - name: Configure pinentry-program
+#        run: |
+#          echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+#      - name: Stop GPG agent (if running)
+#        run: |
+#          if [[ -n "$(pgrep gpg-agent)" ]]; then
+#            gpg-agent --kill
+#          fi
       - name: Import GPG key
         run: |
+          which gpg-agent.conf
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
       - name: List GPG keys
         run: gpg --list-secret-keys
