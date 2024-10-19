@@ -93,6 +93,8 @@ jobs:
           echo "pinentry-program /usr/bin/pinentry-tty" >> /home/runner/.gnupg/gpg-agent.conf
           chmod 700 /home/runner/.gnupg
           chmod 600 /home/runner/.gnupg/*
+      - name: content of GPG config
+        run: cat /home/runner/.gnupg/gpg-agent.conf
       - name: Import GPG key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
